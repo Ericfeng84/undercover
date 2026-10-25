@@ -162,6 +162,10 @@ def test_openapi_operations(client):
         "get_policy_wording",
         "get_company",
         "list_handlers",
+        "add_claim_event",
+        "decide_claim",
+        "pay_claim",
+        "sign_off_claim",
     }
     summaries = {
         "health": "Check that the backend is running.",
@@ -172,6 +176,10 @@ def test_openapi_operations(client):
         "get_policy_wording": "Get the policy wording as markdown.",
         "get_company": "Get the company settings.",
         "list_handlers": "List the claims handlers.",
+        "add_claim_event": "Record a step on a claim.",
+        "decide_claim": "Record a decision on a claim.",
+        "pay_claim": "Pay an approved claim.",
+        "sign_off_claim": "Sign off an over-limit approval and release its payment.",
     }
     for operation_id, summary in summaries.items():
         assert operations[operation_id]["summary"] == summary

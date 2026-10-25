@@ -139,15 +139,15 @@ Why: this is the brief's hard rule, and it belongs in the backend where neither 
 
 Success criteria:
 
-- [ ] `uv run pytest backend -q` passes, coverage at or above 80%.
-- [ ] An approval of $250 on CLM-1001 sets `decided`; paying $250 records the payment; paying again and paying a different amount each return 409.
-- [ ] An approval of $1,500 on CLM-1002 sets `awaiting_signoff` with no payment; paying $1,500 returns 409 and records a blocked-payment step.
-- [ ] Signing off that claim with handler HND-01 sets `decided`, records the handler and the time, and releases a $1,500 payment; signing it off again returns 409, and an unknown handler returns 404.
-- [ ] An approval of exactly $1,000 is `decided` and pays without sign-off; an approval of $1,000.01 waits for sign-off.
-- [ ] A decline and a referral are `decided`, have no payment, and cannot be paid; a second decision on a decided claim returns 409.
-- [ ] A decision on a missing claim, a payment on a missing claim and a sign-off on a missing claim each return 404.
-- [ ] The claim's events read in order: agent started, decision, payment or blocked payment, sign-off and released payment as they happen.
-- [ ] The 409 body for the over-limit payment says the payout needs a handler's sign-off.
+- [x] `uv run pytest backend -q` passes, coverage at or above 80%.
+- [x] An approval of $250 on CLM-1001 sets `decided`; paying $250 records the payment; paying again and paying a different amount each return 409.
+- [x] An approval of $1,500 on CLM-1002 sets `awaiting_signoff` with no payment; paying $1,500 returns 409 and records a blocked-payment step.
+- [x] Signing off that claim with handler HND-01 sets `decided`, records the handler and the time, and releases a $1,500 payment; signing it off again returns 409, and an unknown handler returns 404.
+- [x] An approval of exactly $1,000 is `decided` and pays without sign-off; an approval of $1,000.01 waits for sign-off.
+- [x] A decline and a referral are `decided`, have no payment, and cannot be paid; a second decision on a decided claim returns 409.
+- [x] A decision on a missing claim, a payment on a missing claim and a sign-off on a missing claim each return 404.
+- [x] The claim's events read in order: agent started, decision, payment or blocked payment, sign-off and released payment as they happen.
+- [x] The 409 body for the over-limit payment says the payout needs a handler's sign-off.
 
 ### Phase 3: The agent and the work action
 

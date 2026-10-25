@@ -1,10 +1,13 @@
 # Status
 
-The backend's read API for the claims desk is built. The agent, dashboard and end-to-end test are still the skeleton.
+The backend for the claims desk is built: the read API, decisions, payments and sign-off. The agent, dashboard and end-to-end test are still the skeleton.
 
 ## What's built
 
 - `backend/`: FastAPI and SQLite. On first use it creates `backend/.data/undercover.db`, or the file named in `DATABASE_PATH`, and seeds the 25 queue claims, policies, customers, plans, handlers, company settings and policy wording from `data/`. It serves the health check, the claim queue, one claim in full, the policy wording, the company settings and the handlers.
+- Decisions: approve, decline or refer a waiting or in-progress claim. A decision writes a step to the claim.
+- Payments: an approval up to the $1,000 limit can be paid once, for the approved payout. A larger approval waits for a handler's sign-off, and the backend refuses the payment with 409 and records the blocked attempt.
+- Sign-off: a handler signs off an over-limit approval, which releases the payment and moves the claim to decided.
 - `agent/`: the hello-world entry point with one health-check tool.
 - `dashboard/`: one page that shows whether the backend is up.
 - `e2e/`: one test of that page.
