@@ -1,4 +1,4 @@
-import type { ClaimDetail, ClaimSummary } from "./types";
+import type { ClaimDetail, ClaimSummary, Handler } from "./types";
 
 async function readError(response: Response): Promise<string> {
   const body: unknown = await response.json().catch(() => null);
@@ -33,4 +33,27 @@ export function workClaim(claimId: string): Promise<ClaimDetail> {
   return requestJson<ClaimDetail>(`/api/claims/${claimId}/work`, {
     method: "POST",
   });
+}
+
+export function signOffClaim(
+  claimId: string,
+  handlerId: string,
+): Promise<ClaimDetail> {
+  return requestJson<ClaimDetail>(`/api/claims/${claimId}/sign-off`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ handler_id: handlerId }),
+  });
+}
+
+export function fetchHandlers(): Promise<Handler[]> {
+  return requestJson<Handler[]>("/api/handlers");
+}
+
+export async function fetchInstructions(): Promise<string> {
+  const response = await fetch("/api/instructions");
+  if (!response.ok) {
+    throw new Error(await readError(response));
+  }
+  return response.text();
 }

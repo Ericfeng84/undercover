@@ -1,4 +1,9 @@
-export function Header({ onQueue }: Readonly<{ onQueue: () => void }>) {
+interface HeaderProps {
+  onQueue: () => void;
+  onInstructions: () => void;
+}
+
+export function Header({ onQueue, onInstructions }: Readonly<HeaderProps>) {
   return (
     <header className="site-header">
       <button type="button" className="brand" onClick={onQueue}>
@@ -8,6 +13,9 @@ export function Header({ onQueue }: Readonly<{ onQueue: () => void }>) {
       <nav className="main-nav" aria-label="Main">
         <button type="button" className="nav-button" onClick={onQueue}>
           Queue
+        </button>
+        <button type="button" className="nav-button" onClick={onInstructions}>
+          Instructions
         </button>
       </nav>
     </header>

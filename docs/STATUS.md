@@ -1,6 +1,6 @@
 # Status
 
-The backend, the UnderCover Agent and the dashboard's queue, claim view and Work action are built. Sign-off and the instructions page come next; the end-to-end tests are still the skeleton.
+The backend, the UnderCover Agent and the dashboard are built. The end-to-end tests are still the skeleton and are replaced in the next phase.
 
 ## What's built
 
@@ -9,8 +9,8 @@ The backend, the UnderCover Agent and the dashboard's queue, claim view and Work
 - Payments: an approval up to the $1,000 limit can be paid once, for the approved payout. A larger approval waits for a handler's sign-off, and the backend refuses the payment with 409 and records the blocked attempt.
 - Sign-off: a handler signs off an over-limit approval, which releases the payment and moves the claim to decided.
 - `agent/`: the UnderCover Agent. It reads its instructions from the backend, reads the claim and the policy wording, submits a decision, and pays an approval. Every step is recorded on the claim through the API. `POST /api/claims/{claim_id}/work` runs it on a waiting claim.
-- `dashboard/`: the claims queue and a full claim page with the story, items, documents, policy and plan, customer history, decision and steps. The Work button runs the agent and polls the claim so the steps appear as they arrive. It follows the brand palette and the light and dark surfaces.
-- `e2e/`: one test of that page.
+- `dashboard/`: the claims queue and a full claim page with the story, items, documents, policy and plan, customer history, decision and steps. The Work button runs the agent and polls the claim so the steps appear as they arrive. An over-limit approval shows the blocked payment and a handler select for sign-off. The instructions page shows the agent instructions read only. It follows the brand palette and the light and dark surfaces.
+- `e2e/`: one old skeleton test, replaced in the next phase.
 
 ## Run it
 

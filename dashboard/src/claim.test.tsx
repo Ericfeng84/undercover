@@ -10,6 +10,7 @@ import {
   claimDetail,
   claimEvent,
   decision,
+  handlers,
   jsonResponse,
   queueSummaries,
   routeFetch,
@@ -44,6 +45,7 @@ it("shows a decided claim in full", async () => {
     routeFetch({
       "/api/claims": () => jsonResponse(queueSummaries()),
       "/api/claims/CLM-1001": () => jsonResponse(detail),
+      "/api/handlers": () => jsonResponse(handlers),
     }),
   );
 
@@ -115,6 +117,7 @@ it("works a waiting claim and shows the steps arriving", async () => {
         return jsonResponse(claimLoads === 1 ? waiting : inProgress);
       },
       "/api/claims/CLM-1001/work": () => workResponse,
+      "/api/handlers": () => jsonResponse(handlers),
     }),
   );
 
@@ -149,6 +152,7 @@ it("shows an error when the claim cannot be loaded", async () => {
       "/api/claims": () => jsonResponse(queueSummaries()),
       "/api/claims/CLM-1001": () =>
         jsonResponse({ detail: "Claim unavailable" }, 500),
+      "/api/handlers": () => jsonResponse(handlers),
     }),
   );
 
@@ -166,6 +170,7 @@ it("shows an error when the work request fails", async () => {
       "/api/claims/CLM-1001": () => jsonResponse(claimDetail()),
       "/api/claims/CLM-1001/work": () =>
         jsonResponse({ detail: "The agent is unavailable" }, 500),
+      "/api/handlers": () => jsonResponse(handlers),
     }),
   );
 

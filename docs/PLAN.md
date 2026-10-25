@@ -193,12 +193,12 @@ Why: the brief's sign-off rule and the read-only instructions are part of what t
 
 Success criteria:
 
-- [ ] A waiting-for-sign-off claim shows the payout, "Waiting for sign-off", the handler select and the Sign off button, and says the payment is blocked.
-- [ ] Signing off with HND-01 shows the claim as decided, paid, with the handler's name and the time.
-- [ ] Approved, declined and referred claims each show the right label, reason and policy section; a decline or referral shows no payment and no sign-off control.
-- [ ] The Instructions page shows the same text as `GET /api/instructions`, has no editable field and no save action, and is reachable from the header.
-- [ ] `npx vitest run --root dashboard --coverage` passes at 80% or above; `npm run check:ts` passes.
-- [ ] The three outcomes and the sign-off flow are checked in the browser.
+- [x] A waiting-for-sign-off claim shows the payout, "Waiting for sign-off", the handler select and the Sign off button, and says the payment is blocked.
+- [x] Signing off with HND-01 shows the claim as decided, paid, with the handler's name and the time.
+- [x] Approved, declined and referred claims each show the right label, reason and policy section; a decline or referral shows no payment and no sign-off control.
+- [x] The Instructions page shows the same text as `GET /api/instructions`, has no editable field and no save action, and is reachable from the header.
+- [x] `npx vitest run --root dashboard --coverage` passes at 80% or above; `npm run check:ts` passes.
+- [x] The three outcomes and the sign-off flow are checked in the browser.
 
 ### Phase 6: End-to-end tests, the full check and the status
 

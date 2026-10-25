@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ClaimPage } from "./ClaimPage";
 import { Header } from "./Header";
+import { InstructionsPage } from "./InstructionsPage";
 import { QueuePage } from "./QueuePage";
 import type { View } from "./types";
 
@@ -12,6 +13,9 @@ export function App() {
       <Header
         onQueue={() => {
           setView({ kind: "queue" });
+        }}
+        onInstructions={() => {
+          setView({ kind: "instructions" });
         }}
       />
       <main className="page">
@@ -31,6 +35,7 @@ export function App() {
             }}
           />
         )}
+        {view.kind === "instructions" && <InstructionsPage />}
       </main>
     </div>
   );

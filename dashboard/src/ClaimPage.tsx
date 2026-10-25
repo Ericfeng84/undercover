@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { fetchClaim, workClaim } from "./api";
+import { fetchClaim, fetchHandlers, signOffClaim, workClaim } from "./api";
+import { ActionPanel } from "./ActionPanel";
 import { ClaimDetails } from "./ClaimDetails";
 import { DecisionPanel } from "./DecisionPanel";
 import { errorMessage, formatMoney, humanize } from "./format";
 import { StatusChip } from "./StatusChip";
 import { StepsPanel } from "./StepsPanel";
-import type { ClaimDetail } from "./types";
+import type { ClaimDetail, Handler } from "./types";
 
 interface ClaimPageProps {
   claimId: string;
@@ -14,17 +15,25 @@ interface ClaimPageProps {
 
 export function ClaimPage({ claimId, onBack }: Readonly<ClaimPageProps>) {
   const [detail, setDetail] = useState<ClaimDetail | null>(null);
+  const [handlers, setHandlers] = useState<Handler[]>([]);
+  const [selectedHandler, setSelectedHandler] = useState("");
   const [error, setError] = useState("");
   const [working, setWorking] = useState(false);
+  const [signingOff, setSigningOff] = useState(false);
 
   useEffect(() => {
     let active = true;
 
     async function load() {
       try {
-        const data = await fetchClaim(claimId);
+        const [data, handlersData] = await Promise.all([
+          fetchClaim(claimId),
+          fetchHandlers(),
+        ]);
         if (active) {
           setDetail(data);
+          setHandlers(handlersData);
+          setSelectedHandler(handlersData[0]?.handler_id ?? "");
         }
       } catch (loadError) {
         if (active) {
@@ -58,6 +67,23 @@ export function ClaimPage({ claimId, onBack }: Readonly<ClaimPageProps>) {
       window.clearInterval(timer);
     };
   }, [claimId, working]);
+
+  async function handleSignOff() {
+    setError("");
+    setSigningOff(true);
+    try {
+      const updated = await signOffClaim(claimId, selectedHandler);
+      setDetail(updated);
+    } catch (signOffError) {
+      setError(errorMessage(signOffError));
+      const refreshed = await fetchClaim(claimId).catch(() => null);
+      if (refreshed !== null) {
+        setDetail(refreshed);
+      }
+    } finally {
+      setSigningOff(false);
+    }
+  }
 
   async function handleWork() {
     setError("");
@@ -127,25 +153,16 @@ export function ClaimPage({ claimId, onBack }: Readonly<ClaimPageProps>) {
         </div>
       )}
 
-      {claim.status === "waiting" && (
-        <div className="action-panel">
-          <div>
-            <h3>Ready to work</h3>
-            <p className="muted">
-              Start the UnderCover Agent on this claim. The steps appear as it
-              works.
-            </p>
-          </div>
-          <button
-            type="button"
-            className="primary-button"
-            onClick={() => void handleWork()}
-            disabled={working}
-          >
-            Work this claim
-          </button>
-        </div>
-      )}
+      <ActionPanel
+        detail={detail}
+        handlers={handlers}
+        working={working}
+        signingOff={signingOff}
+        selectedHandler={selectedHandler}
+        onHandlerChange={setSelectedHandler}
+        onWork={() => void handleWork()}
+        onSignOff={() => void handleSignOff()}
+      />
 
       {working && claim.status === "in_progress" && (
         <p className="working" role="status">
@@ -154,7 +171,7 @@ export function ClaimPage({ claimId, onBack }: Readonly<ClaimPageProps>) {
       )}
 
       <ClaimDetails detail={detail} />
-      <DecisionPanel detail={detail} />
+      <DecisionPanel detail={detail} handlers={handlers} />
       <StepsPanel events={detail.events} />
     </section>
   );
