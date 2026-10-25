@@ -1,6 +1,6 @@
 # Status
 
-The backend and the UnderCover Agent are built. The dashboard and the end-to-end tests are still the skeleton.
+The backend, the UnderCover Agent and the dashboard's queue, claim view and Work action are built. Sign-off and the instructions page come next; the end-to-end tests are still the skeleton.
 
 ## What's built
 
@@ -9,12 +9,12 @@ The backend and the UnderCover Agent are built. The dashboard and the end-to-end
 - Payments: an approval up to the $1,000 limit can be paid once, for the approved payout. A larger approval waits for a handler's sign-off, and the backend refuses the payment with 409 and records the blocked attempt.
 - Sign-off: a handler signs off an over-limit approval, which releases the payment and moves the claim to decided.
 - `agent/`: the UnderCover Agent. It reads its instructions from the backend, reads the claim and the policy wording, submits a decision, and pays an approval. Every step is recorded on the claim through the API. `POST /api/claims/{claim_id}/work` runs it on a waiting claim.
-- `dashboard/`: one page that shows whether the backend is up.
+- `dashboard/`: the claims queue and a full claim page with the story, items, documents, policy and plan, customer history, decision and steps. The Work button runs the agent and polls the claim so the steps appear as they arrive. It follows the brand palette and the light and dark surfaces.
 - `e2e/`: one test of that page.
 
 ## Run it
 
-`uv sync` and `npm install` install everything. `npm run dev:backend` starts the API at http://localhost:8000, and `npm run check:python` runs the Python checks.
+`uv sync` and `npm install` install everything. `npm run dev` starts the API at http://localhost:8000 and the dashboard at http://localhost:5173. `npm run check:python` runs the Python checks and `npm run check:ts` runs the TypeScript checks.
 
 ```
 curl localhost:8000/api/claims

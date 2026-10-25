@@ -176,14 +176,14 @@ Why: the team needs to see the queue, each claim in full and what the agent is d
 
 Success criteria:
 
-- [ ] At `http://localhost:5173`, the queue lists 25 claims with customer, type, amount and state, and the state chips use the brand colours.
-- [ ] Clicking CLM-1001 opens the claim with the story, items, documents, policy and plan, Maya Patel's earlier claim, and a link back to the queue.
-- [ ] A decided claim shows its outcome, payout, calculation, reasons and policy section, and its steps in order.
-- [ ] The Work button appears only on a waiting claim; clicking it shows "In progress" and the steps arriving, then the decision, and the button goes away. This is checked in the browser against a running backend and agent.
-- [ ] The page is readable at 1280 wide and on a phone-sized window, uses Instrument Sans, Instrument Serif and JetBrains Mono, and follows the light and dark surfaces in `docs/BRAND.md`.
-- [ ] `npx vitest run --root dashboard --coverage` passes, with statements at or above 80%.
-- [ ] `npm run check:ts` passes.
-- [ ] The unit tests mock `fetch` and cover the queue, a decided claim, a waiting claim and the error state.
+- [x] At `http://localhost:5173`, the queue lists 25 claims with customer, type, amount and state, and the state chips use the brand colours.
+- [x] Clicking CLM-1001 opens the claim with the story, items, documents, policy and plan, Maya Patel's earlier claim, and a link back to the queue.
+- [x] A decided claim shows its outcome, payout, calculation, reasons and policy section, and its steps in order.
+- [x] The Work button appears only on a waiting claim; clicking it shows "In progress" and the steps arriving, then the decision, and the button goes away. This is checked in the browser against a running backend and agent.
+- [x] The page is readable at 1280 wide and on a phone-sized window, uses Instrument Sans, Instrument Serif and JetBrains Mono, and follows the light and dark surfaces in `docs/BRAND.md`.
+- [x] `npx vitest run --root dashboard --coverage` passes, with statements at or above 80%.
+- [x] `npm run check:ts` passes.
+- [x] The unit tests mock `fetch` and cover the queue, a decided claim, a waiting claim and the error state.
 
 ### Phase 5: Sign-off, decision variants and the instructions page
 

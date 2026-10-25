@@ -1,19 +1,37 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ClaimPage } from "./ClaimPage";
+import { Header } from "./Header";
+import { QueuePage } from "./QueuePage";
+import type { View } from "./types";
 
 export function App() {
-  const [status, setStatus] = useState("checking");
-
-  useEffect(() => {
-    void fetch("/api/health")
-      .then((response) => (response.ok ? "up" : "down"))
-      .catch(() => "down")
-      .then(setStatus);
-  }, []);
+  const [view, setView] = useState<View>({ kind: "queue" });
 
   return (
-    <main>
-      <h1>UnderCover</h1>
-      <p>Backend: {status}</p>
-    </main>
+    <div className="app">
+      <Header
+        onQueue={() => {
+          setView({ kind: "queue" });
+        }}
+      />
+      <main className="page">
+        {view.kind === "queue" && (
+          <QueuePage
+            onOpenClaim={(claimId) => {
+              setView({ kind: "claim", claimId });
+            }}
+          />
+        )}
+        {view.kind === "claim" && (
+          <ClaimPage
+            key={view.claimId}
+            claimId={view.claimId}
+            onBack={() => {
+              setView({ kind: "queue" });
+            }}
+          />
+        )}
+      </main>
+    </div>
   );
 }
