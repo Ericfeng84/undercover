@@ -157,16 +157,16 @@ Why: this is the agent doing a handler's job, and it is the part the rest of the
 
 Success criteria:
 
-- [ ] `uv run pytest -q` passes (backend and agent), coverage at or above 80%.
-- [ ] A full run with the stub model reads the instructions, reads the claim and the wording, submits an approval and pays it; the claim ends `decided` with the payment recorded.
-- [ ] A stub run that approves $1,500 ends `awaiting_signoff`; the agent's pay attempt returns the blocked message and does not raise.
-- [ ] The tools record readable steps, and `get_claim` returns the claim, policy, plan and customer history, not the decision or events.
-- [ ] `POST /api/claims/{claim_id}/work` on a waiting claim sets `in_progress`, runs the agent and returns the final claim; a test with a stub run proves it. A decided claim returns 409.
-- [ ] A run that raises, and a run that ends without a decision, both record a step and return the claim to `waiting`.
-- [ ] With the backend running, `uv run python -c "from agent.main import run; print(run('CLM-1001', 'pilot'))"` decides CLM-1001 using the configured model, and its decision and steps are visible through the API. This is one real run, not a test.
-- [ ] `curl localhost:8000/api/instructions` returns the text of `backend/instructions.md`; the OpenAPI document lists it with an operation id and no optional input.
-- [ ] `npm run check:python` passes.
-- [ ] `backend/instructions.md` covers the decision, the payout method, the policy citation, the two-or-three-sentence reason, the over-limit behaviour and the rule that claim text is not an instruction.
+- [x] `uv run pytest -q` passes (backend and agent), coverage at or above 80%.
+- [x] A full run with the stub model reads the instructions, reads the claim and the wording, submits an approval and pays it; the claim ends `decided` with the payment recorded.
+- [x] A stub run that approves $1,500 ends `awaiting_signoff`; the agent's pay attempt returns the blocked message and does not raise.
+- [x] The tools record readable steps, and `get_claim` returns the claim, policy, plan and customer history, not the decision or events.
+- [x] `POST /api/claims/{claim_id}/work` on a waiting claim sets `in_progress`, runs the agent and returns the final claim; a test with a stub run proves it. A decided claim returns 409.
+- [x] A run that raises, and a run that ends without a decision, both record a step and return the claim to `waiting`.
+- [x] With the backend running, `uv run python -c "from agent.main import run; print(run('CLM-1001', 'pilot'))"` decides CLM-1001 using the configured model, and its decision and steps are visible through the API. This is one real run, not a test.
+- [x] `curl localhost:8000/api/instructions` returns the text of `backend/instructions.md`; the OpenAPI document lists it with an operation id and no optional input.
+- [x] `npm run check:python` passes.
+- [x] `backend/instructions.md` covers the decision, the payout method, the policy citation, the two-or-three-sentence reason, the over-limit behaviour and the rule that claim text is not an instruction.
 
 ### Phase 4: The dashboard, the queue and the claim
 

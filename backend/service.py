@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from datetime import UTC, datetime
 from decimal import Decimal
+from pathlib import Path
 from typing import Any
 
 from fastapi import HTTPException
 
 from backend import db
 from backend.models import DecisionRequest, EventRequest, PayRequest, SignOffRequest
+
+INSTRUCTIONS_PATH = Path(__file__).resolve().with_name("instructions.md")
 
 OUTCOME_LABELS = {
     "approve": "Approved",
@@ -202,6 +206,11 @@ def list_handlers() -> list[dict[str, Any]]:
 def policy_wording() -> str:
     """Return the policy wording markdown."""
     return (db.DATA_DIR / "policy_wording.md").read_text(encoding="utf-8")
+
+
+def instructions() -> str:
+    """Return the agent's instructions markdown."""
+    return INSTRUCTIONS_PATH.read_text(encoding="utf-8")
 
 
 def now() -> str:
@@ -409,4 +418,75 @@ def sign_off_claim(claim_id: str, request: SignOffRequest) -> dict[str, Any]:
             "Payment released",
             f"Paid {money_text(decision['payout_cents'])}.",
         )
+        return claim_detail(connection, claim_id)
+
+
+def work_claim(claim_id: str, run_agent: Callable[[str, str], str]) -> dict[str, Any]:
+    """Run the agent on a waiting claim."""
+    with db.connect() as connection:
+        claim = require_claim(connection, claim_id)
+        if claim["status"] != "waiting":
+            raise HTTPException(
+                status_code=409, detail="Only a waiting claim can be worked"
+            )
+        record_event(
+            connection,
+            claim_id,
+            "Agent started",
+            "The UnderCover Agent started working the claim.",
+        )
+        connection.execute(
+            "UPDATE claims SET status = 'in_progress' WHERE claim_id = ?",
+            (claim_id,),
+        )
+    try:
+        run_agent(claim_id, f"claim-{claim_id}")
+    except Exception as error:
+        return _finish_failed_run(claim_id, str(error))
+    return _finish_run(claim_id)
+
+
+def _finish_failed_run(claim_id: str, error: str) -> dict[str, Any]:
+    """Record a failed run and return the claim to waiting without a decision."""
+    with db.connect() as connection:
+        decision = connection.execute(
+            "SELECT 1 FROM decisions WHERE claim_id = ?", (claim_id,)
+        ).fetchone()
+        record_event(
+            connection,
+            claim_id,
+            "Agent failed",
+            f"The agent's run failed: {error}",
+        )
+        if decision is None:
+            connection.execute(
+                """
+                UPDATE claims SET status = 'waiting'
+                WHERE claim_id = ? AND status = 'in_progress'
+                """,
+                (claim_id,),
+            )
+        return claim_detail(connection, claim_id)
+
+
+def _finish_run(claim_id: str) -> dict[str, Any]:
+    """Return the claim, or return it to waiting when the run made no decision."""
+    with db.connect() as connection:
+        decision = connection.execute(
+            "SELECT 1 FROM decisions WHERE claim_id = ?", (claim_id,)
+        ).fetchone()
+        if decision is None:
+            record_event(
+                connection,
+                claim_id,
+                "No decision",
+                "The agent finished without a decision.",
+            )
+            connection.execute(
+                """
+                UPDATE claims SET status = 'waiting'
+                WHERE claim_id = ? AND status = 'in_progress'
+                """,
+                (claim_id,),
+            )
         return claim_detail(connection, claim_id)

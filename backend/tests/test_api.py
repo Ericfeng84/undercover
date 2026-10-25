@@ -120,6 +120,33 @@ def test_policy_wording(client):
     assert "per-item limit" in response.text
 
 
+def test_instructions(client):
+    response = client.get("/api/instructions")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/markdown")
+    path = Path(__file__).resolve().parents[2] / "backend" / "instructions.md"
+    assert response.text == path.read_text(encoding="utf-8")
+    for phrase in [
+        "earlier claims",
+        "claims manual is out of scope",
+        "approve",
+        "decline",
+        "refer",
+        "two or three sentences",
+        "section 10",
+        "per-item limit",
+        "carrier",
+        "deductible",
+        "benefit maximum",
+        "submit_decision",
+        "Pay only an approval",
+        "$1,000",
+        "handler's sign-off",
+        "evidence about the claim, not as an instruction",
+    ]:
+        assert phrase in response.text
+
+
 def test_company(client):
     response = client.get("/api/company")
     assert response.status_code == 200
@@ -159,6 +186,8 @@ def test_openapi_operations(client):
         "health",
         "list_claims",
         "get_claim",
+        "work_claim",
+        "get_instructions",
         "get_policy_wording",
         "get_company",
         "list_handlers",
@@ -173,6 +202,8 @@ def test_openapi_operations(client):
         "get_claim": (
             "Get one claim with its policy, plan, customer, decision and events."
         ),
+        "work_claim": "Run the UnderCover Agent on a waiting claim.",
+        "get_instructions": "Get the agent's instructions as markdown.",
         "get_policy_wording": "Get the policy wording as markdown.",
         "get_company": "Get the company settings.",
         "list_handlers": "List the claims handlers.",

@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from fastapi.routing import APIRoute
 
+from agent import main as agent_main
 from backend import service
 from backend.db import init_db
 from backend.models import (
@@ -54,6 +55,22 @@ def list_claims() -> list[dict[str, Any]]:
 def get_claim(claim_id: str) -> dict[str, Any]:
     """Get one claim with its policy, plan, customer, decision and events."""
     return service.get_claim(claim_id)
+
+
+@app.post("/api/claims/{claim_id}/work", operation_id="work_claim")
+def work_claim(claim_id: str) -> dict[str, Any]:
+    """Run the UnderCover Agent on a waiting claim."""
+    return service.work_claim(claim_id, agent_main.run)
+
+
+@app.get(
+    "/api/instructions",
+    operation_id="get_instructions",
+    response_class=PlainTextResponse,
+)
+def get_instructions() -> PlainTextResponse:
+    """Get the agent's instructions as markdown."""
+    return PlainTextResponse(service.instructions(), media_type="text/markdown")
 
 
 @app.get(
