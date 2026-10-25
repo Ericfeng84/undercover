@@ -1,6 +1,6 @@
 # Status
 
-The backend, the UnderCover Agent and the dashboard are built. The end-to-end tests are still the skeleton and are replaced in the next phase.
+The pilot is built: the backend, the UnderCover Agent, the dashboard and the end-to-end tests.
 
 ## What's built
 
@@ -10,22 +10,32 @@ The backend, the UnderCover Agent and the dashboard are built. The end-to-end te
 - Sign-off: a handler signs off an over-limit approval, which releases the payment and moves the claim to decided.
 - `agent/`: the UnderCover Agent. It reads its instructions from the backend, reads the claim and the policy wording, submits a decision, and pays an approval. Every step is recorded on the claim through the API. `POST /api/claims/{claim_id}/work` runs it on a waiting claim.
 - `dashboard/`: the claims queue and a full claim page with the story, items, documents, policy and plan, customer history, decision and steps. The Work button runs the agent and polls the claim so the steps appear as they arrive. An over-limit approval shows the blocked payment and a handler select for sign-off. The instructions page shows the agent instructions read only. It follows the brand palette and the light and dark surfaces.
-- `e2e/`: one old skeleton test, replaced in the next phase.
+- `e2e/`: Playwright tests for the queue, the instructions page and the over-limit sign-off flow. `npm run e2e` runs them against a fresh database in `e2e/.data/` and leaves the development database alone.
 
-## Run it
-
-`uv sync` and `npm install` install everything. `npm run dev` starts the API at http://localhost:8000 and the dashboard at http://localhost:5173. `npm run check:python` runs the Python checks and `npm run check:ts` runs the TypeScript checks.
+## Install and run
 
 ```
-curl localhost:8000/api/claims
-curl localhost:8000/api/claims/CLM-1001
-curl localhost:8000/api/instructions
+uv sync
+npm install
+npm run dev
 ```
 
-With the backend running, work a claim with the agent:
+`npm run dev` starts the API at http://localhost:8000 and the dashboard at http://localhost:5173. `npm run check` runs every check, including the end-to-end tests.
+
+To reset the queue, stop the backend and delete `backend/.data/undercover.db`. The next start seeds the 25 claims again.
+
+## Demo
+
+1. Open http://localhost:5173 and click CLM-1001.
+2. Press Work this claim. The status shows In progress, the steps arrive, and the decision follows.
+3. For the sign-off flow, create a $1,200 approval on CLM-1002:
 
 ```
-curl -X POST localhost:8000/api/claims/CLM-1001/work
+curl -X POST localhost:8000/api/claims/CLM-1002/decision \
+  -H 'content-type: application/json' \
+  -d '{"outcome":"approve","payout":1200,"calculation":"Covered costs.","reason":"The loss is covered by the policy wording.","policy_section":"Sections 5 and 10"}'
 ```
 
-The claim ends `decided` or `awaiting_signoff`, and its decision and steps are visible from `GET /api/claims/CLM-1001`. To reset the queue, stop the backend and delete `backend/.data/undercover.db`. The next start seeds it again.
+Open CLM-1002. The page shows Waiting for sign-off and the blocked payment. Choose HND-01 and press Sign off. The claim becomes Decided and paid, with the handler and time.
+
+4. Open Instructions from the header to read the agent's instructions.

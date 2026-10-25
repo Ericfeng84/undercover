@@ -210,14 +210,14 @@ Build a small `e2e/run.mjs` that deletes the end-to-end database, sets `DATABASE
 
 Success criteria:
 
-- [ ] `npm run e2e` uses its own fresh database (`e2e/.data/undercover.db`), starts its own servers and leaves the development database alone.
-- [ ] The queue test finds 25 claims and opens CLM-1001 to see Maya Patel, the story and the documents.
-- [ ] The instructions test reaches the page and sees the instructions, with no editable field.
-- [ ] The sign-off test submits an approval of $1,200 through the API, sees "Waiting for sign-off" and the blocked payment in the dashboard, signs off with HND-01, then sees the claim decided and paid; a payment attempt after sign-off returns 409.
-- [ ] No end-to-end test clicks Work or calls a model.
-- [ ] `npm run check` passes: ruff format and lint, pyright, pytest at 80% coverage, Prettier, ESLint, tsc, vitest at 80% coverage, and Playwright.
-- [ ] `docs/STATUS.md` says what is built, how to start it, how to reset the queue and a short demo script: work a claim, watch the steps, sign off a large payout.
-- [ ] Every phase's criteria are ticked, each phase is committed, and `git status` is clean.
+- [x] `npm run e2e` uses its own fresh database (`e2e/.data/undercover.db`), starts its own servers and leaves the development database alone.
+- [x] The queue test finds 25 claims and opens CLM-1001 to see Maya Patel, the story and the documents.
+- [x] The instructions test reaches the page and sees the instructions, with no editable field.
+- [x] The sign-off test submits an approval of $1,200 through the API, sees "Waiting for sign-off" and the blocked payment in the dashboard, signs off with HND-01, then sees the claim decided and paid; a payment attempt after sign-off returns 409.
+- [x] No end-to-end test clicks Work or calls a model.
+- [x] `npm run check` passes: ruff format and lint, pyright, pytest at 80% coverage, Prettier, ESLint, tsc, vitest at 80% coverage, and Playwright.
+- [x] `docs/STATUS.md` says what is built, how to start it, how to reset the queue and a short demo script: work a claim, watch the steps, sign off a large payout.
+- [x] Every phase's criteria are ticked, each phase is committed, and `git status` is clean.
 
 ## Out of scope
 
